@@ -42,35 +42,35 @@ rm -f .env
 # Control Plane Cluster #
 #########################
 
-kind create cluster --config kind.yaml
+#kind create cluster --config kind.yaml
 
-kubectl apply \
-    --filename https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+#kubectl apply \
+#    --filename https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
 ##############
 # Crossplane #
 ##############
 
-helm upgrade --install crossplane crossplane \
-    --repo https://charts.crossplane.io/stable \
-    --namespace crossplane-system --create-namespace --wait
+#helm upgrade --install crossplane crossplane \
+#    --repo https://charts.crossplane.io/stable \
+#    --namespace crossplane-system --create-namespace --wait
+#
+#kubectl apply \
+#    --filename providers/provider-kubernetes-incluster.yaml
+#
+#kubectl apply --filename providers/provider-helm-incluster.yaml
 
-kubectl apply \
-    --filename providers/provider-kubernetes-incluster.yaml
+#kubectl apply --filename providers/dot-kubernetes.yaml
 
-kubectl apply --filename providers/provider-helm-incluster.yaml
+#kubectl apply --filename providers/dot-sql.yaml
 
-kubectl apply --filename providers/dot-kubernetes.yaml
+#kubectl apply --filename providers/dot-app.yaml
 
-kubectl apply --filename providers/dot-sql.yaml
+#gum spin --spinner dot \
+#    --title "Waiting for Crossplane providers..." -- sleep 60
 
-kubectl apply --filename providers/dot-app.yaml
-
-gum spin --spinner dot \
-    --title "Waiting for Crossplane providers..." -- sleep 60
-
-kubectl wait --for=condition=healthy provider.pkg.crossplane.io \
-    --all --timeout=1800s
+#kubectl wait --for=condition=healthy provider.pkg.crossplane.io \
+#    --all --timeout=1800s
 
 echo "## Which Hyperscaler do you want to use?" | gum format
 
@@ -162,7 +162,7 @@ else
 
     AZURE_TENANT_ID=$(gum input --placeholder "Azure Tenant ID" --value "$AZURE_TENANT_ID")
 
-    az login --tenant $AZURE_TENANT_ID
+    az login --use-device-code --tenant $AZURE_TENANT_ID
 
     export SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 
